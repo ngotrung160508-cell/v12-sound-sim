@@ -34,8 +34,16 @@
     };
   }
 
+  function wakeAudio() {
+    if (!audio.ready) audio.start();
+    if (audio.ctx && audio.ctx.state === "suspended") {
+      audio.ctx.resume();
+    }
+  }
+
   function doAction(name) {
     if (!started) return;
+    wakeAudio();
     switch (name) {
       case "up": car.shiftUp(); break;
       case "down": car.shiftDown(); break;
@@ -67,16 +75,26 @@
     for (const k in touch) touch[k] = false;
   });
 
-  // Nút cảm ứng
+  // Nút cảm ứng đa điểm (hỗ trợ vừa giữ ga vừa bấm sang số/lái trên điện thoại)
   document.querySelectorAll("[data-hold]").forEach((el) => {
     const name = el.dataset.hold;
-    const on = (e) => { e.preventDefault(); touch[name] = true; };
-    const off = (e) => { e.preventDefault(); touch[name] = false; };
+    const on = (e) => {
+      e.preventDefault();
+      wakeAudio();
+      if (el.setPointerCapture && e.pointerId !== undefined) {
+        try { el.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      touch[name] = true;
+    };
+    const off = (e) => {
+      e.preventDefault();
+      touch[name] = false;
+    };
     el.addEventListener("pointerdown", on);
     el.addEventListener("pointerup", off);
-    el.addEventListener("pointerleave", off);
     el.addEventListener("pointercancel", off);
   });
+
   document.querySelectorAll("[data-action]").forEach((el) => {
     el.addEventListener("pointerdown", (e) => {
       e.preventDefault();
@@ -98,23 +116,26 @@
     if (audio.ready) audio.pop(0.6);
   }
 
-  startBtn.addEventListener("click", () => {
-    audio.start(); // phải gọi từ thao tác người dùng
+  function startSimulation(e) {
+    if (e) e.preventDefault();
+    if (started) return;
+    wakeAudio();
     overlay.classList.add("hidden");
     started = true;
     engine.start();
-  });
+  }
+
+  startBtn.addEventListener("click", startSimulation);
+  startBtn.addEventListener("pointerdown", startSimulation);
 
   // ---------------- Mỗi khung hình ----------------
   function step(dt) {
     const input = readInput();
 
-    // vật lý chạy bước nhỏ 1/120 s cho ổn định
     const steps = Math.max(1, Math.ceil(dt / (1 / 120)));
     const h = dt / steps;
     for (let i = 0; i < steps; i++) car.update(h, input);
 
-    // ra khỏi đường thì bị cản
     if (scene.offroad && car.speed > 6) {
       car.speed -= Math.min(car.speed - 6, (car.speed * 0.35 + 6) * dt);
     }
@@ -125,10 +146,10 @@
         audio.ignition();
         scene.flame = 0.6;
       } else if (ev === "up" && engine.throttle > 0.4 && engine.rpm > 3500) {
-        audio.crackle(3, 0.35); // cắt ga khi sang số => nổ lẹt đẹt
+        audio.crackle(3, 0.35, engine.rpm);
         scene.flame = 0.7;
       } else if (ev === "down" && engine.rpm > 3000) {
-        audio.crackle(2, 0.3);
+        audio.crackle(2, 0.3, engine.rpm);
         scene.flame = 0.45;
       }
     }
@@ -136,13 +157,13 @@
     // ---- Nhả ga ở vòng tua cao => nổ pô ----
     if (engine.running) {
       if (prevThrottleIn > 0.5 && input.throttle === 0 && engine.rpm > 4500) {
-        audio.crackle(4 + Math.floor(Math.random() * 3), 0.5);
+        audio.crackle(4 + Math.floor(Math.random() * 3), 0.5, engine.rpm);
         scene.flame = 0.9;
       }
       if (input.throttle === 0 && engine.rpm > 5200 && car.speed > 10) {
         const prob = dt * 7 * (engine.rpm / 9000 - 0.4);
         if (Math.random() < prob) {
-          audio.pop(0.3 + Math.random() * 0.5);
+          audio.pop(0.3 + Math.random() * 0.5, 0, engine.rpm);
           scene.flame = Math.max(scene.flame, 0.4 + Math.random() * 0.4);
         }
       }
@@ -175,6 +196,7 @@
       throttle: engine.throttle,
       fuelCut: engine.fuelCut,
       speed: car.speed,
+      gear: car.gear,
     });
   }
 
