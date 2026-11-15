@@ -24,7 +24,7 @@ canvas { display: block; position: fixed; inset: 0; z-index: 1; }
   z-index: 20;
   transition: opacity 0.4s;
 }
-#overlay.hidden { opacity: 0; pointer-events: none; }
+#overlay.hidden { opacity: 0; pointer-events: none; display: none; }
 
 .card {
   max-width: 520px;
@@ -58,7 +58,7 @@ kbd {
 .tip { margin: 16px 0 4px; font-size: 13px; color: #ffd84a; }
 #startBtn {
   margin-top: 14px;
-  padding: 13px 38px;
+  padding: 14px 42px;
   font-size: 18px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -72,9 +72,9 @@ kbd {
 }
 #startBtn:active { transform: translateY(1px); }
 
-/* Nút cảm ứng: hiện trên điện thoại & máy tính bảng */
+/* Nút cảm ứng: hiển thị trên điện thoại, máy tính bảng và màn hình cảm ứng */
 #touch { display: none; }
-@media (max-width: 900px), (pointer: coarse) {
+@media (max-width: 950px), (pointer: coarse) {
   #touch {
     display: flex;
     position: fixed;
@@ -87,7 +87,7 @@ kbd {
   }
   .pad { display: flex; gap: 10px; pointer-events: auto; }
   .pad button {
-    min-width: 60px; height: 60px;
+    min-width: 58px; height: 58px;
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.25);
     background: rgba(20, 22, 40, 0.72);
@@ -99,7 +99,7 @@ kbd {
     -webkit-user-select: none;
     -webkit-touch-callout: none;
   }
-  .pad button:active { transform: scale(0.95); filter: brightness(1.3); }
-  .pad .gas { background: rgba(40, 180, 100, 0.65); min-width: 84px; height: 84px; }
-  .pad .brake { background: rgba(220, 60, 70, 0.65); }
+  .pad button:active { transform: scale(0.94); filter: brightness(1.3); }
+  .pad .gas { background: rgba(40, 180, 100, 0.68); min-width: 82px; height: 82px; }
+  .pad .brake { background: rgba(220, 60, 70, 0.68); }
 }
