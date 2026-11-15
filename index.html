@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>V12 Sound &amp; Drive</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="overlay">
+    <div class="card">
+      <h1>V12 SOUND &amp; DRIVE</h1>
+      <p class="sub">Động cơ V12 · 4 ống pô · âm thanh tổng hợp theo thời gian thực</p>
+      <div class="keys">
+        <div><kbd>↑</kbd> / <kbd>W</kbd> / <kbd>Space</kbd> Ga</div>
+        <div><kbd>↓</kbd> / <kbd>S</kbd> Phanh</div>
+        <div><kbd>←</kbd> <kbd>→</kbd> / <kbd>A</kbd> <kbd>D</kbd> Lái</div>
+        <div><kbd>E</kbd> / <kbd>Shift</kbd> Lên số</div>
+        <div><kbd>Q</kbd> / <kbd>Ctrl</kbd> Xuống số</div>
+        <div><kbd>T</kbd> Tự động / số sàn</div>
+        <div><kbd>N</kbd> Về số mo (đạp ga để gầm máy)</div>
+        <div><kbd>M</kbd> Tắt tiếng · <kbd>H</kbd> Ẩn xi-lanh · <kbd>R</kbd> Đề lại</div>
+      </div>
+      <p class="tip">Mẹo: nhả ga đột ngột ở vòng tua cao hoặc lên/xuống số để nghe tiếng nổ pô.</p>
+      <button id="startBtn">NỔ MÁY</button>
+    </div>
+  </div>
+
+  <div id="touch">
+    <div class="pad left">
+      <button data-hold="left">◀</button>
+      <button data-hold="right">▶</button>
+    </div>
+    <div class="pad mid">
+      <button data-action="down">−</button>
+      <button data-action="up">+</button>
+      <button data-action="auto">A/M</button>
+    </div>
+    <div class="pad right">
+      <button data-hold="brake" class="brake">PHANH</button>
+      <button data-hold="gas" class="gas">GA</button>
+    </div>
+  </div>
+
+  <script src="src/util.js"></script>
+  <script src="src/engine.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/road.js"></script>
+  <script src="src/hud.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>

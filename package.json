@@ -1,0 +1,10 @@
+{
+  "name": "v12-sound-and-drive",
+  "version": "1.0.0",
+  "description": "Game lái xe V12 với âm thanh động cơ và tiếng pô tổng hợp theo thời gian thực (HTML5 Canvas + Web Audio)",
+  "private": true,
+  "scripts": {
+    "start": "python3 -m http.server 8080"
+  },
+  "license": "MIT"
+}
